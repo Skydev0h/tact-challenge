@@ -76,7 +76,7 @@ contract Task4 with Deployable {
         });
         return;
     }
-    self.lockedUntil = msg.forwardPayload.loadUint(32);
+    self.lockedUntil = now() + msg.forwardPayload.loadUint(32);
     self.nftAddress = sender();
     self.nftOwner = msg.prevOwner;
   }
@@ -112,7 +112,7 @@ contract Task4 with Deployable {
   }
 
   get fun time(): Int {
-    return self.lockedUntil;
+    return self.lockedUntil - now();
   }
 
   get fun nft(): Address? {
