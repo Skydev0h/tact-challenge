@@ -82,7 +82,7 @@ contract Task4 with Deployable {
   }
 
   receive(msg: NftWithdrawal) {
-    nativeThrowUnless(33, sender() == self.nftOwner);
+    require(sender() == self.nftOwner, "Invalid sender");
     if (now() < self.lockedUntil) {
       send(SendParameters{
           to: sender(),
