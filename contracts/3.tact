@@ -50,6 +50,7 @@ contract Task3 with Deployable {
   jettonAddressA: Address;
   jettonAddressB: Address;
   decimal: Int;
+  // const decimal: Int = 1000000000;
 
   init(admin: Address, newJettonAddressA: Address, newJettonAddressB: Address) {
     self.owner = admin;
@@ -61,11 +62,64 @@ contract Task3 with Deployable {
   }
 
   receive(msg: JettonNotification) {
+  /*
+    let sen: Address = sender();
+    if (sen == self.jettonAddressA) {
+      let amt_to: Int = msg.amount * self.bAmount / self.aAmount;
+      if (amt_to > self.bAmount) {
+        send(SendParameters{
+          to: sen,
+          value: 0,
+          mode: SendRemainingValue,
+          body: JettonTransfer{
+            queryId: msg.queryId,
+            amount: msg.amount,
+            destination: msg.from,
+            responseDestination: msg.from,
+            customPayload: emptyCell(),
+            forwardTonAmount: 1000000,
+            forwardPayload: msg.forwardPayload
+          }.toCell()
+        });
+        // self.amountA = self.amountA msg.amount;
+        // self.amountB
+      }
+    }
+    if (sen == self.jettonAddressB) {
+      let amt_to: Int = msg.amount * self.aAmount / self.bAmount;
+      if (amt_to > self.aAmount) {
+        send(SendParameters{
+          to: sen,
+          value: 0,
+          mode: SendRemainingValue,
+          body: JettonTransfer{
+            queryId: msg.queryId,
+            amount: msg.amount,
+            destination: msg.from,
+            responseDestination: msg.from,
+            customPayload: emptyCell(),
+            forwardTonAmount: 1000000,
+            forwardPayload: msg.forwardPayload
+          }.toCell()
+        });
+        return;
+      }
+    }
+    nativeThrow(33);
+    */
   } 
   
-  get fun price(jetton: Address): Int { 
+  get fun price(jetton: Address): Int {
+    if (sender() == self.jettonAddressA) {
+      return self.aAmount * self.decimal / self.bAmount;
+    }
+    return self.bAmount * self.decimal / self.aAmount;
   }
   
-  get fun balance(jetton: Address): Int { 
+  get fun balance(jetton: Address): Int {
+    if (jetton == self.jettonAddressA) {
+      return self.aAmount;
+    }
+    return self.bAmount;
   }
 }
