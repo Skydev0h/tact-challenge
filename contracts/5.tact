@@ -20,23 +20,24 @@ import "@stdlib/deploy";
    - SC should check that incoming tx TON value is enough for NFT withdrawal. Specifically, at least: (1 + totalNftsHeld * 0.08) TONs. Otherwise throw "Insufficent funds"
    - SC should check that sender is the admin, throw "Invalid sender" otherwise
    - If all checks pass, SC should send NFTs one by one to the admin 
-  * OwnershipAssigned 
+   - SC should be able to withdraw all NFTs by a single message from admin
+  * OwnershipAssigned
    - if prevOwner is the owner's (admin) address, then add NFT to the collection
    - if value of TON attached is less then 2.1 TON then stop execution and return NFT back,
      but only in case that TON attached is enough to process refund without losing TONs on the SC's balance
    - randomly select NFT to send from all the NFTs that smart contract has
    - send the selected NFT to the sender with all remaining balance (except for admin profit = fees collected from this and other swaps)
      In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
-  
+
   Getters
   * profit
    - returns how much collected fees is available to withdraw for the admin (all fees minus 0.1 TON)
   * nfts
-   - returns dict of held NFTs with NFT indexes (sequential numbers from 0, 1, 2 ... and up to 'totalNftsHeld-1') as keys and NFT address as values 
+   - returns dict of held NFTs with NFT indexes (sequential numbers from 0, 1, 2 ... and up to 'totalNftsHeld-1') as keys and NFT address as values
      the order of NFTs in this dictionary doesn't matter
 */
 
-message AdminWithdrawalFees {
+message AdminWithdrawalProfit {
   queryId: Int as uint64;
 }
 
@@ -44,29 +45,29 @@ message AdminWithdrawalAllNFTs {
   queryId: Int as uint64;
 }
 
-message AdminFetchFees {
+message AdminFetchProfit {
   queryId: Int as uint64;
 }
 
 message(0x05138d91) OwnershipAssigned {
     queryId: Int as uint64;
     prevOwner: Address;
-    forwardPayload: Slice as remaining; 
+    forwardPayload: Slice as remaining;
 }
 
-message(0x5fcc3d14) Transfer { 
-    queryId: Int as uint64;            
-    newOwner: Address; 
-    responseDestination: Address; 
-    customPayload: Cell?; 
-    forwardAmount: Int as coins; 
-    forwardPayload: Slice as remaining; 
+message(0x5fcc3d14) Transfer {
+    queryId: Int as uint64;
+    newOwner: Address;
+    responseDestination: Address;
+    customPayload: Cell?;
+    forwardAmount: Int as coins;
+    forwardPayload: Slice as remaining;
 }
 
 contract Task5 with Deployable {
   seed: Int as uint128;
   owner: Address;
-  
+
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
@@ -75,7 +76,7 @@ contract Task5 with Deployable {
   receive(msg: OwnershipAssigned) {
   }
 
-  receive(msg: AdminWithdrawalFees) {
+  receive(msg: AdminWithdrawalProfit) {
   }
 
   receive(msg: AdminWithdrawalAllNFTs) {
