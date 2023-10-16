@@ -106,14 +106,14 @@ contract Task4 with Deployable {
         forwardPayload: emptySlice()
       }.toCell()
     });
-    // self.lockedUntil = 0;
+    self.lockedUntil = 0;
     self.nftAddress = null;
     self.nftOwner = null;
   }
 
   get fun time(): Int {
-    // return max(0, self.lockedUntil - now());
-    return self.lockedUntil - now();
+    return max(0, self.lockedUntil - now());
+    // return self.lockedUntil - now();
   }
 
   get fun nft(): Address? {
