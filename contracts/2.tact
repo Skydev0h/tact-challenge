@@ -34,7 +34,7 @@ contract Task2 with Deployable {
       mode: SendRemainingValue
     });
     */
-    nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(msg.sender.asSlice()).storeCoins(0).storeUint(0, 107).endCell(), 64);
+    nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(msg.sender.asSlice()).storeUint(0, 111).endCell(), 64);
   }
 
   receive(msg: Slice) {
@@ -46,7 +46,7 @@ contract Task2 with Deployable {
       body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
     });
     */
-    nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(self.admin.asSlice()).storeCoins(0).storeUint(0, 107)
+    nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(self.admin.asSlice()).storeUint(0, 111)
       .storeSlice(sender().asSlice()).storeRef( beginCell().storeSlice(msg).endCell() ).endCell(), 64);
   }
 }
