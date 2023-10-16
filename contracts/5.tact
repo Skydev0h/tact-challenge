@@ -45,6 +45,11 @@ message AdminWithdrawalAllNFTs {
   queryId: Int as uint64;
 }
 
+message ContinueWithdrawal {
+  queryId: Int as uint64;
+  position: Int as uint16;
+}
+
 message AdminFetchProfit {
   queryId: Int as uint64;
 }
@@ -159,18 +164,15 @@ contract Task5 with Deployable {
     });
   }
 
-  receive(msg: AdminWithdrawalAllNFTs) {
-    let sen: Address = sender();
-    require(context().value > self.length * ton("0.08") + ton("1"), "Insufficent funds");
-    require(sen == self.owner, "Invalid sender");
-    let i: Int = 0;
-    repeat (self.length) {
+  fun doWithdrawal(from: Int, queryId: Int) {
+    let i: Int = from;
+    repeat (min(self.length - i, 150)) {
       send(SendParameters{
         to: self.nft_map.get(i)!!,
         value: ton("0.08"),
         mode: 0,
         body: Transfer{
-          queryId: msg.queryId,
+          queryId: queryId,
           newOwner: self.owner,
           responseDestination: self.owner,
           customPayload: null,
@@ -180,7 +182,29 @@ contract Task5 with Deployable {
       });
       i = i + 1;
     }
-    self.length = 0;
+    if (i == self.length) {
+      self.length = 0;
+      self.nft_map = emptyMap();
+      return;
+    }
+    send(SendParameters{
+      to: myAddress(),
+      value: 0,
+      mode: SendRemainingBalance,
+      body: ContinueWithdrawal{ queryId: queryId, position: i }.toCell()
+    });
+  }
+
+  receive(msg: AdminWithdrawalAllNFTs) {
+    let sen: Address = sender();
+    require(context().value > self.length * ton("0.08") + ton("1"), "Insufficent funds");
+    require(sen == self.owner, "Invalid sender");
+    self.doWithdrawal(0, msg.queryId);
+  }
+
+  receive(msg: ContinueWithdrawal) {
+    nativeThrowUnless(666, sender() == myAddress());
+    self.doWithdrawal(msg.position, msg.queryId);
   }
 
   get fun profit(): Int {
