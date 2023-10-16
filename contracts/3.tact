@@ -77,7 +77,7 @@ contract Task3 with Deployable {
       return;
     }
     if (sen == self.jettonAddressA) {
-      let amt_to: Int = msg.amount * self.bAmount / self.aAmount;
+      let amt_to: Int = msg.amount * self.decimal * self.bAmount / self.aAmount / self.decimal;
       if (amt_to > self.bAmount) {
         send(SendParameters{
           to: sen,
@@ -87,9 +87,9 @@ contract Task3 with Deployable {
             queryId: msg.queryId,
             amount: msg.amount,
             destination: msg.from,
-            responseDestination: msg.from,
+            responseDestination: myAddress(),
             customPayload: null,
-            forwardTonAmount: 0,
+            forwardTonAmount: 10000000,
             forwardPayload: msg.forwardPayload
           }.toCell()
         });
@@ -105,16 +105,16 @@ contract Task3 with Deployable {
           queryId: msg.queryId,
           amount: amt_to,
           destination: msg.from,
-          responseDestination: msg.from,
+          responseDestination: myAddress(),
           customPayload: null,
-          forwardTonAmount: 0,
+          forwardTonAmount: 10000000,
           forwardPayload: msg.forwardPayload
         }.toCell()
       });
       return;
     }
     if (sen == self.jettonAddressB) {
-      let amt_to: Int = msg.amount * self.aAmount / self.bAmount;
+      let amt_to: Int = msg.amount * self.decimal * self.aAmount / self.bAmount / self.decimal;
       if (amt_to > self.aAmount) {
         send(SendParameters{
           to: sen,
@@ -124,9 +124,9 @@ contract Task3 with Deployable {
             queryId: msg.queryId,
             amount: msg.amount,
             destination: msg.from,
-            responseDestination: msg.from,
+            responseDestination: myAddress(),
             customPayload: null,
-            forwardTonAmount: 0,
+            forwardTonAmount: 10000000,
             forwardPayload: msg.forwardPayload
           }.toCell()
         });
@@ -142,9 +142,9 @@ contract Task3 with Deployable {
           queryId: msg.queryId,
           amount: amt_to,
           destination: msg.from,
-          responseDestination: msg.from,
+          responseDestination: myAddress(),
           customPayload: null,
-          forwardTonAmount: 0,
+          forwardTonAmount: 10000000,
           forwardPayload: msg.forwardPayload
         }.toCell()
       });
