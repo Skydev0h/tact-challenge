@@ -27,19 +27,26 @@ contract Task2 with Deployable {
   
   receive(msg: Refund) {
     nativeThrowUnless(33, sender() == self.admin);
+    /*
     send(SendParameters{
       to: msg.sender,
       value: 0,
       mode: SendRemainingValue
     });
+    */
+    nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(msg.sender.asSlice()).storeCoins(0).storeUint(0, 107).endCell(), 64);
   }
 
   receive(msg: Slice) {
+    /*
     send(SendParameters{
       to: self.admin,
       value: 0,
       mode: SendRemainingValue,
       body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
     });
+    */
+    nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(self.admin.asSlice()).storeCoins(0).storeUint(0, 107)
+      .storeSlice(sender().asSlice()).storeRef( beginCell().storeSlice(msg).endCell() ).endCell(), 64);
   }
 }
