@@ -82,9 +82,11 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalAllNFTs) {
   }
 
-  get fun profit(): Int { 
+  get fun profit(): Int {
+    return 0;
   }
   
-  get fun nfts(): map<Int as uint16, Address> { 
+  get fun nfts(): map<Int as uint16, Address> {
+    return emptyMap();
   }
 }
