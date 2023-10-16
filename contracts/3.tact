@@ -67,51 +67,90 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
-    /*
-      let sen: Address = sender();
+    let sen: Address = sender();
+    if (msg.from == self.owner) {
       if (sen == self.jettonAddressA) {
-        let amt_to: Int = msg.amount * self.bAmount / self.aAmount;
-        if (amt_to > self.bAmount) {
-          send(SendParameters{
-            to: sen,
-            value: 0,
-            mode: SendRemainingValue,
-            body: JettonTransfer{
-              queryId: msg.queryId,
-              amount: msg.amount,
-              destination: msg.from,
-              responseDestination: msg.from,
-              customPayload: emptyCell(),
-              forwardTonAmount: 1000000,
-              forwardPayload: msg.forwardPayload
-            }.toCell()
-          });
-          // self.amountA = self.amountA msg.amount;
-          // self.amountB
-        }
+        self.aAmount = self.aAmount + msg.amount;
+        return;
       }
-      if (sen == self.jettonAddressB) {
-        let amt_to: Int = msg.amount * self.aAmount / self.bAmount;
-        if (amt_to > self.aAmount) {
-          send(SendParameters{
-            to: sen,
-            value: 0,
-            mode: SendRemainingValue,
-            body: JettonTransfer{
-              queryId: msg.queryId,
-              amount: msg.amount,
-              destination: msg.from,
-              responseDestination: msg.from,
-              customPayload: emptyCell(),
-              forwardTonAmount: 1000000,
-              forwardPayload: msg.forwardPayload
-            }.toCell()
-          });
-          return;
-        }
+      self.bAmount = self.bAmount + msg.amount;
+      return;
+    }
+    if (sen == self.jettonAddressA) {
+      let amt_to: Int = msg.amount * self.bAmount / self.aAmount;
+      if (amt_to > self.bAmount) {
+        send(SendParameters{
+          to: sen,
+          value: 0,
+          mode: SendRemainingValue,
+          body: TokenTransfer{
+            queryId: msg.queryId,
+            amount: msg.amount,
+            destination: msg.from,
+            responseDestination: msg.from,
+            customPayload: null,
+            forwardTonAmount: 0,
+            forwardPayload: msg.forwardPayload
+          }.toCell()
+        });
+        return;
       }
-      nativeThrow(33);
-      */
+      self.aAmount = self.aAmount + msg.amount;
+      self.bAmount = self.bAmount - amt_to;
+      send(SendParameters{
+        to: self.jettonAddressB,
+        value: 0,
+        mode: SendRemainingValue,
+        body: TokenTransfer{
+          queryId: msg.queryId,
+          amount: amt_to,
+          destination: msg.from,
+          responseDestination: msg.from,
+          customPayload: null,
+          forwardTonAmount: 0,
+          forwardPayload: msg.forwardPayload
+        }.toCell()
+      });
+      return;
+    }
+    if (sen == self.jettonAddressB) {
+      let amt_to: Int = msg.amount * self.aAmount / self.bAmount;
+      if (amt_to > self.aAmount) {
+        send(SendParameters{
+          to: sen,
+          value: 0,
+          mode: SendRemainingValue,
+          body: TokenTransfer{
+            queryId: msg.queryId,
+            amount: msg.amount,
+            destination: msg.from,
+            responseDestination: msg.from,
+            customPayload: null,
+            forwardTonAmount: 0,
+            forwardPayload: msg.forwardPayload
+          }.toCell()
+        });
+        return;
+      }
+      self.bAmount = self.bAmount + msg.amount;
+      self.aAmount = self.aAmount - amt_to;
+      send(SendParameters{
+        to: self.jettonAddressA,
+        value: 0,
+        mode: SendRemainingValue,
+        body: TokenTransfer{
+          queryId: msg.queryId,
+          amount: amt_to,
+          destination: msg.from,
+          responseDestination: msg.from,
+          customPayload: null,
+          forwardTonAmount: 0,
+          forwardPayload: msg.forwardPayload
+        }.toCell()
+      });
+      return;
+    }
+    nativeThrow(33);
   }
 
   get fun price(jetton: Address): Int {
