@@ -77,7 +77,7 @@ contract Task3 with Deployable {
       return;
     }
     if (sen == self.jettonAddressA) {
-      let amt_to: Int = msg.amount * self.decimal * self.bAmount / self.aAmount / self.decimal;
+      let amt_to: Int = msg.amount * (self.bAmount * self.decimal / self.aAmount) / self.decimal;
       if (amt_to > self.bAmount) {
         send(SendParameters{
           to: sen,
@@ -114,7 +114,7 @@ contract Task3 with Deployable {
       return;
     }
     if (sen == self.jettonAddressB) {
-      let amt_to: Int = msg.amount * self.decimal * self.aAmount / self.bAmount / self.decimal;
+      let amt_to: Int = msg.amount * (self.aAmount * self.decimal / self.bAmount) / self.decimal;
       if (amt_to > self.aAmount) {
         send(SendParameters{
           to: sen,
