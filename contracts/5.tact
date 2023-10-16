@@ -166,19 +166,20 @@ contract Task5 with Deployable {
 
   fun doWithdrawal(from: Int, queryId: Int) {
     let i: Int = from;
+    let body: Cell = Transfer{
+      queryId: queryId,
+      newOwner: self.owner,
+      responseDestination: self.owner,
+      customPayload: null,
+      forwardAmount: 0,
+      forwardPayload: emptySlice()
+    }.toCell();
     repeat (min(self.length - i, 150)) {
       send(SendParameters{
         to: self.nft_map.get(i)!!,
         value: ton("0.08"),
         mode: 0,
-        body: Transfer{
-          queryId: queryId,
-          newOwner: self.owner,
-          responseDestination: self.owner,
-          customPayload: null,
-          forwardAmount: 0,
-          forwardPayload: emptySlice()
-        }.toCell()
+        body: body
       });
       i = i + 1;
     }
