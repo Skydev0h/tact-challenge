@@ -93,6 +93,7 @@ contract Task3 with Deployable {
             forwardPayload: msg.forwardPayload
           }.toCell()
         });
+        throw(0); // exit with retcode 0 - successful execution
         return;
       }
       self.aAmount = self.aAmount + msg.amount;
@@ -130,6 +131,7 @@ contract Task3 with Deployable {
             forwardPayload: msg.forwardPayload
           }.toCell()
         });
+        throw(0); // exit with retcode 0 - successful execution
         return;
       }
       self.bAmount = self.bAmount + msg.amount;

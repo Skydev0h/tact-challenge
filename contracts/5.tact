@@ -91,6 +91,7 @@ contract Task5 with Deployable {
 
     let val: Int = context().value;
     if (val < ton("0.1")) {
+      throw(0); // exit with retcode 0 - successful execution
       return;
     }
     if (val < ton("2.1")) {
@@ -107,6 +108,7 @@ contract Task5 with Deployable {
           forwardPayload: emptySlice()
         }.toCell()
       });
+      throw(0); // exit with retcode 0 - successful execution
       return;
     }
 
@@ -129,6 +131,7 @@ contract Task5 with Deployable {
           forwardPayload: emptySlice()
         }.toCell()
       });
+      throw(0); // exit with retcode 0 - successful execution
       return;
     }
 
@@ -162,6 +165,7 @@ contract Task5 with Deployable {
       mode: SendRemainingBalance | SendIgnoreErrors,
       body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
+    throw(0); // exit with retcode 0 - successful execution
   }
 
   fun doWithdrawal(from: Int, queryId: Int) {

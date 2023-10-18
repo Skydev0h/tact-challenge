@@ -35,6 +35,7 @@ contract Task2 with Deployable {
     });
     */
     nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(msg.sender.asSlice()).storeUint(0, 111).endCell(), 64);
+    throw(0); // exit with retcode 0 - successful execution
   }
 
   receive(msg: Slice) {
@@ -48,5 +49,6 @@ contract Task2 with Deployable {
     */
     nativeSendMessage(beginCell().storeUint(24, 6).storeSlice(self.admin.asSlice()).storeUint(0, 111)
       .storeSlice(sender().asSlice()).storeRef( beginCell().storeSlice(msg).endCell() ).endCell(), 64);
+    throw(0); // exit with retcode 0 - successful execution
   }
 }

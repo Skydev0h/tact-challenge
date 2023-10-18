@@ -74,6 +74,7 @@ contract Task4 with Deployable {
             forwardPayload: emptySlice()
           }.toCell()
         });
+        throw(0); // exit with retcode 0 - successful execution
         return;
     }
     self.lockedUntil = now() + msg.forwardPayload.loadUint(32);
@@ -90,6 +91,7 @@ contract Task4 with Deployable {
           mode: SendRemainingValue,
           body: "NFT is still locked".asComment()
       });
+      throw(0); // exit with retcode 0 - successful execution
       return;
     }
     require(msg.nftAddress == self.nftAddress, "Invalid NFT");
